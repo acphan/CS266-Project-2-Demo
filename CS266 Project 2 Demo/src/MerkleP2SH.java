@@ -9,7 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 
 public class MerkleP2SH {
 
-	public static void main(String [] args) throws NoSuchAlgorithmException, NoSuchPaddingException, IOException
+	public static void main(String [] args) throws Exception
 	  {
 		// Start timer and record memory
 		long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
@@ -17,16 +17,17 @@ public class MerkleP2SH {
 
 	  	// Hash script
 	  	ScriptHashOut hashedScript = new ScriptHashOut();
-
+	  	System.out.println(hashedScript.hashScript());
+	  	
 	  	// Put into string format
-	  	String hashNode1 = hashedScript.toString();
-	  	String hashNode2 = hashedScript.toString();
-	  	String hashNode3 = hashedScript.toString();
-	  	String hashNode4 = hashedScript.toString();
-	  	String hashNode5 = hashedScript.toString();
-	  	String hashNode6 = hashedScript.toString();
-	  	String hashNode7 = hashedScript.toString();
-	  	String hashNode8 = hashedScript.toString();
+	  	String hashNode1 = hashedScript.hashScript();
+	  	String hashNode2 = hashedScript.hashScript();
+	  	String hashNode3 = hashedScript.hashScript();
+	  	String hashNode4 = hashedScript.hashScript();
+	  	String hashNode5 = hashedScript.hashScript();
+	  	String hashNode6 = hashedScript.hashScript();
+	  	String hashNode7 = hashedScript.hashScript();
+	  	String hashNode8 = hashedScript.hashScript();
 	  
 	  	// Put hashed nodes in list for merkle tree
 	    List<String> merkleNodes = new ArrayList<String>();
@@ -44,13 +45,6 @@ public class MerkleP2SH {
 	    treeOne.mTree();
 	    System.out.println("root : " + treeOne.getRoot());
 	    System.out.println();
-	    
-	    // For every node, generate key pair
-	    Script newScript = new Script();
-	    newScript.setPubKeyList(newScript.multisign(treeOne.getNodeCount()));
-	    
-	    
-	    
 
 	    // Test merkle tree authentication correctly - same nodes/path
 	    System.out.println("Same nodes and path test");
@@ -120,7 +114,6 @@ public class MerkleP2SH {
 	    System.out.println("Memory Used: " + actualMemUsed + " bytes.");
 	  }
 	
-	
 	 // Get hash value of messages to be placed into merkle tree nodes
 	  public static String getHash(String str) {
 	      byte[] cipher_byte;
@@ -140,13 +133,12 @@ public class MerkleP2SH {
 	      return "";
 	  }
 	
-	 // Compare merkle tree root and node final hash
-	  public static void checkHash (MerkleTree tree, String checkNodeFinal, String usedNode)
+	 // Compare merkle tree root and node final hash as well as script hashes
+	  public static void checkHash (MerkleTree tree, String checkNodeFinal, String usedNode) throws Exception
 	  {
 		  ScriptHashOut checkScript = new ScriptHashOut();
-		  String checkScriptString = checkScript.toString();
 
-		   if ((tree.getRoot().compareTo(checkNodeFinal) == 0) && (checkScriptString.compareTo(usedNode) == 0))
+		   if ((tree.getRoot().compareTo(checkNodeFinal) == 0) && (checkScript.hashScript().compareTo(usedNode) == 0))
 		    {
 		    	System.out.println("Accept the node. Continue.");
 		    }
