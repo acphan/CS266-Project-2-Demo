@@ -86,5 +86,10 @@ public class MerkleTree {
   {
     return this.root;
   }
+  
+  public int getNodeCount()
+  {
+	  return this.nodes.size();
+  }
     
 }
