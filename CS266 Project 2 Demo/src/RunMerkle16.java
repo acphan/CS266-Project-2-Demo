@@ -177,7 +177,7 @@ public class RunMerkle16 {
   {
 	   if (tree.getRoot().equals(checkNodeFinal))
 	    {
-	    	System.out.println("Accept the node, the has and root are equal. Continue.");
+	    	System.out.println("Accept the node, the hash and root are equal. Continue.");
 	    }
 	    else
 	    {

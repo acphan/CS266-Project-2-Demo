@@ -63,7 +63,7 @@ public class RunMerkle32 {
   	String hashNode19 = getHash(node19);
   	String hashNode20 = getHash(node20);
   	String hashNode21 = getHash(node21);
-  	String hashNode22= getHash(node22);
+  	String hashNode22 = getHash(node22);
   	String hashNode23 = getHash(node23);
   	String hashNode24 = getHash(node24);
   	String hashNode25 = getHash(node25);
@@ -275,7 +275,7 @@ public class RunMerkle32 {
   {
 	   if (tree.getRoot().equals(checkNodeFinal))
 	    {
-	    	System.out.println("Accept the node, the has and root are equal. Continue.");
+	    	System.out.println("Accept the node, the hash and root are equal. Continue.");
 	    }
 	    else
 	    {

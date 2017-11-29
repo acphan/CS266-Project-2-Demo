@@ -49,11 +49,64 @@ public class MerkleP2SH {
 	    Script newScript = new Script();
 	    newScript.setPubKeyList(newScript.multisign(treeOne.getNodeCount()));
 	    
-	    //Check node
-	    String checkedNode1 = hashNode1;
-	    ScriptHashOut nodeScriptHash = new ScriptHashOut();
 	    
 	    
+
+	    // Test merkle tree authentication correctly - same nodes/path
+	    System.out.println("Same nodes and path test");
+	    String checkNode1 = hashNode1;
+	    
+	    String checkNode2 = getHash(checkNode1 + hashNode2);
+	    String checkNode3 = getHash(hashNode3 + hashNode4);
+	    String checkNode4 = getHash(hashNode5 + hashNode6);
+	    String checkNode5 = getHash(hashNode7 + hashNode8);
+	    
+	    String checkNode6 = getHash(checkNode2 + checkNode3);
+	    String checkNode7 = getHash(checkNode4 + checkNode5);
+	    
+	    String checkNodeFinal = getHash(checkNode6 + checkNode7);
+	    System.out.println((checkNodeFinal));
+
+	    checkHash(treeOne, checkNodeFinal, checkNode1);
+	    System.out.println();
+	    
+	    // Test merkle tree authentication wrong - changed node, same path
+	    System.out.println("Different node and same path test");
+	    String hashNode1DN = getHash("This is a different node.");
+	    String checkNode1DN = hashNode1DN;
+	    
+	    String checkNode2DN = getHash(checkNode1DN + hashNode2);
+	    String checkNode3DN = getHash(hashNode3 + hashNode4);
+	    String checkNode4DN = getHash(hashNode5 + hashNode6);
+	    String checkNode5DN = getHash(hashNode7 + hashNode8);
+	    
+	    String checkNode6DN = getHash(checkNode2DN + checkNode3DN);
+	    String checkNode7DN = getHash(checkNode4DN + checkNode5DN);
+	    
+	    String checkNodeFinalDN = getHash(checkNode6DN + checkNode7DN);
+	    System.out.println((checkNodeFinalDN));
+	    
+	    checkHash(treeOne, checkNodeFinalDN, checkNode1DN);
+	    System.out.println();
+	    
+	    
+	    // Test merkle tree authentication wrong - same nodes, changed path
+	    System.out.println("Same nodes and different path test");
+	    String checkNode1DP = hashNode1;
+	    
+	    String checkNode2DP = getHash(checkNode1DP + hashNode2);
+	    String checkNode3DP = getHash(hashNode3 + hashNode4);
+	    String checkNode4DP = getHash(hashNode5 + hashNode6);
+	    String checkNode5DP = getHash(hashNode7 + hashNode8);
+	    
+	    String checkNode6DP = getHash(checkNode3DP + checkNode2DP);
+	    String checkNode7DP = getHash(checkNode4DP + checkNode5DP);
+	    
+	    String checkNodeFinalDP = getHash(checkNode6DP + checkNode7DP);
+	    System.out.println((checkNodeFinalDP));
+
+	    checkHash(treeOne, checkNodeFinalDP, checkNode1DP);
+	    System.out.println();
 	    
 	    // Get time it takes to perform the tests
 	    long time2 = System.nanoTime();
@@ -65,6 +118,43 @@ public class MerkleP2SH {
 	    long afterUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
 	    long actualMemUsed=afterUsedMem-beforeUsedMem;
 	    System.out.println("Memory Used: " + actualMemUsed + " bytes.");
+	  }
+	
+	
+	 // Get hash value of messages to be placed into merkle tree nodes
+	  public static String getHash(String str) {
+	      byte[] cipher_byte;
+	      try{
+	          MessageDigest md = MessageDigest.getInstance("SHA-256");
+	          md.update(str.getBytes());
+	          cipher_byte = md.digest();
+	          StringBuilder sb = new StringBuilder(2 * cipher_byte.length);
+	          for(byte b: cipher_byte) {
+	            sb.append(String.format("%02x", b&0xff) );
+	          }
+	          return sb.toString();
+	      } catch (Exception e) {
+	              e.printStackTrace();
+	      }
+	      
+	      return "";
+	  }
+	
+	 // Compare merkle tree root and node final hash
+	  public static void checkHash (MerkleTree tree, String checkNodeFinal, String usedNode)
+	  {
+		  ScriptHashOut checkScript = new ScriptHashOut();
+		  String checkScriptString = checkScript.toString();
+
+		   if ((tree.getRoot().compareTo(checkNodeFinal) == 0) && (checkScriptString.compareTo(usedNode) == 0))
+		    {
+		    	System.out.println("Accept the node. Continue.");
+		    }
+		    else
+		    {
+		    	System.out.println("Do not accept.");
+		    }
+		   
 	  }
 
 }
